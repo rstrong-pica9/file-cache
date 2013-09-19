@@ -1,0 +1,13 @@
+{
+    "name": "pica/file-cache",
+    "description": "This library enables caching of non-critical files, meaning that they can be reproduced using the source files (thumbnails, cropped images, etc). Requested file will be cached to disk until the maximum amount of space is used at which point the cached file with the oldest request time will be deleted.",
+    "authors": [
+        {
+            "name": "Rob Strong",
+            "email": "rstrong@pica9.com"
+        }
+    ],
+    "require": {
+
+    }
+}
