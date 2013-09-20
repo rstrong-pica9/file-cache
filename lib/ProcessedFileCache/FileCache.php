@@ -6,6 +6,7 @@ class Cache
 {
     private static $db;
     private static $maxCacheSize;
+    private static $relativeFileRoot;
 
     public function __construct(ListInterface $db)
     {
@@ -29,6 +30,7 @@ class Cache
 
     public function static storeFile($uniqueId, $fileData)
     {
+        file_put_contents(self::$relativeFileRoot . $uniqueId, $fileData);
         self::$db->storeFile($uniqueId, $fileData);
     }
 
@@ -38,8 +40,8 @@ class Cache
         if (is_null($fileLocation)) {
             return false;
         }
-        if (is_file($fileLocation)) {
-            return $fileLocation;
+        if (is_file(self::$relativeFileRoot . $fileLocation)) {
+            return self::$relativeFileRoot . $fileLocation;
         }
         return false;
     }
@@ -51,8 +53,11 @@ class Cache
         }
     }
 
-    protected function static getDirectorySize()
+    protected function static getDirectorySize($dir = null)
     {
+        if (is_null($dir)) {
+            $dir = self::$relativeFileRoot;
+        }
         $size = 0;
         $files = scandir($dir);
         foreach($files as $key => $filename) {
@@ -71,7 +76,7 @@ class Cache
     public static function removeOldestFile()
     {
         $file = self::$db->removeOldest();
-        unlink($file);
+        unlink(self::$relativeFileRoot . $file);
     }
 
 }

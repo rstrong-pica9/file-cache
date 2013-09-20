@@ -5,6 +5,7 @@ namespace Pica9\ProcessedFileCache\List;
 class Redis
 {
     private $redis;
+    private $listKey = 'processed-file-cache';
 
     public function __construct($connection)
     {
@@ -12,26 +13,24 @@ class Redis
             $this->redis = $connection;
         } elseif (is_array($connection)) {
             $this->redis = new Predis\Client($connection);
+        } else {
+            throw new \Exception('Invalid value for parameter: $connection');
         }
     }
 
-    public function promoteFile($id)
+    public function promoteId($id)
     {
-
+        $this->redis->lrem($this->listKey, 0, $id);
+        $this->storeId($id);
     }
 
-    public function storeFile($id, $fileData)
+    public function storeId($id)
     {
-
-    }
-
-    public function getFile($id)
-    {
-
+        $this->redis->lpush($this->listKey, $id);
     }
 
     public function removeOldest()
     {
-
+        return $this->redis->rpop($this->listKey);
     }
 }
