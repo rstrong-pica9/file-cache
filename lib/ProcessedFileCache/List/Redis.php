@@ -18,7 +18,7 @@ class Redis
         }
     }
 
-    public function promoteId($id)
+    public function refreshId($id)
     {
         $this->redis->lrem($this->listKey, 0, $id);
         $this->storeId($id);
